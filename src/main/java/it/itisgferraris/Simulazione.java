@@ -14,10 +14,21 @@ public class Simulazione extends Thread{
 
     public Simulazione() {
         super();
+        ambiente = new Ambiente();
     }
 
     @Override
     public void run() {
-        
+        System.out.println("Simulazione creata");
+        for (int i = 0; i < ticks; i++) {
+            while (!running) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    System.err.println(e);
+                }
+            }
+
+        }
     }
 }

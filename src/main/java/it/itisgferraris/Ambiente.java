@@ -2,9 +2,13 @@ package it.itisgferraris;
 
 import java.util.HashMap;
 
-public class Ambiente {
+public class Ambiente implements Tickable{
     private HashMap<String, String> parametri;
 
+    public Ambiente() {
+        parametri = new HashMap<>();
+    }
+    
     public Ambiente(HashMap<String,String> parametri) {
         this.parametri = new HashMap<>(parametri);
     }
@@ -24,5 +28,10 @@ public class Ambiente {
 
     public void setParametro(String key, String val) {
         this.parametri.put(key, val);
+    }
+
+    @Override
+    public void tick() {
+
     }
 }

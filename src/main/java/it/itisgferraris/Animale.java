@@ -2,7 +2,7 @@ package it.itisgferraris;
 
 import java.util.HashMap;
 
-public class Animale {
+public class Animale implements Tickable{
     private String nome;
     private int age;
     private HashMap<String, String> parametri; //Dizionario che contiene le informazioni specifiche della specie
@@ -44,5 +44,10 @@ public class Animale {
 
     public void setParametro(String key, String val) {
         this.parametri.put(key, val);
+    }
+
+    @Override
+    public void tick() {
+
     }
 }
