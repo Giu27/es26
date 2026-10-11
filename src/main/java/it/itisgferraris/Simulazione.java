@@ -28,7 +28,10 @@ public class Simulazione extends Thread{
                     System.err.println(e);
                 }
             }
-
+            ambiente.tick();
+            for (Animale animale : animali) {
+                animale.tick();
+            }
         }
     }
 }
