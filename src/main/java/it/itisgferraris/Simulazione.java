@@ -17,8 +17,20 @@ public class Simulazione extends Thread{
         ambiente = new Ambiente();
     }
 
+    public void setTicks(int ticks) {
+        this.ticks = ticks;
+    }
+
+    public synchronized void setRunning(boolean r) {
+        if (ticks == 0) {
+            throw new IllegalStateException("Non puoi avviare senza aver impostato i tick di simulazione");
+        }
+        running = r;
+        notify();
+    }
+
     @Override
-    public void run() {
+    public synchronized void run() {
         System.out.println("Simulazione creata");
         for (int i = 0; i < ticks; i++) {
             while (!running) {
@@ -33,5 +45,7 @@ public class Simulazione extends Thread{
                 animale.tick();
             }
         }
+        running = false;
+        System.out.println("Simulazione terminata");
     }
 }
