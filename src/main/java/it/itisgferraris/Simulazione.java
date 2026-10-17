@@ -4,40 +4,29 @@ import java.time.Instant;
 import java.time.Duration;
 import java.util.ArrayList;
 
-public class Simulazione extends Thread{
-    private int ticks;
-    private boolean running = false;
+public class Simulazione extends Thread {
+    private final int DURATA_SLEEP = 3000;
+    private Data data;
     private Instant inizio, fine;
     private Duration durata;
     private ArrayList<Animale> animali = new ArrayList<>();
     private Ambiente ambiente;
 
-    public Simulazione() {
+    public Simulazione(Data data) {
         super();
+        this.data = data;
         ambiente = new Ambiente();
     }
 
-    public void setTicks(int ticks) {
-        this.ticks = ticks;
-    }
-
-    public boolean getRunning() {
-        return running;
-    }
-
-    public synchronized void setRunning(boolean r) {
-        if (ticks == 0) {
-            throw new IllegalStateException("Non puoi avviare senza aver impostato i tick di simulazione");
-        }
-        running = r;
-        notify();
+    public synchronized void wake() {
+        notifyAll();
     }
 
     @Override
     public synchronized void run() {
         System.out.println("Simulazione creata");
-        for (int i = 0; i < ticks; i++) {
-            while (!running) {
+        for (int i = 0; i < data.getTicks(); i++) {
+            while (!data.getRunning()) {
                 try {
                     wait();
                 } catch (InterruptedException e) {
@@ -48,9 +37,13 @@ public class Simulazione extends Thread{
             for (Animale animale : animali) {
                 animale.tick();
             }
+            try {
+                sleep(DURATA_SLEEP);
+            } catch (InterruptedException ex) {}
         }
-        running = false;
-        ticks = 0;
+        data.setRunning(false);
+        data.setTicks(0);
         System.out.println("Simulazione terminata");
+        data.setTerminata(true);
     }
 }

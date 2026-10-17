@@ -5,11 +5,13 @@ import javax.swing.*;
 
 public class Interfaccia extends Thread{
     private final Simulazione simulazione;
+    private final Data data;
     private JFrame frame;
 
-    public Interfaccia(Simulazione simulazione) {
+    public Interfaccia(Simulazione simulazione, Data data) {
         super();
         this.simulazione = simulazione;
+        this.data = data;
         frame = new JFrame("Simulazione");
         frame.setSize(300, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,7 +30,7 @@ public class Interfaccia extends Thread{
         
         handleTicksButton.addActionListener(e -> {
             try {
-                simulazione.setTicks(Integer.parseInt(ticksField.getText()));
+                data.setTicks(Integer.parseInt(ticksField.getText()));
                 ticksField.setText("");
                 handleTicksButton.setEnabled(false);;
                 simulazione.start();
@@ -44,12 +46,14 @@ public class Interfaccia extends Thread{
         
         handleStartButton.addActionListener(e -> {
             try {
-                if (simulazione.getRunning()) {
+                if (!data.getRunning()) {
                     handleStartButton.setText("Pausa");
                 } else {
                     handleStartButton.setText("Avvia");
                 }
-                simulazione.setRunning(!simulazione.getRunning());
+                
+                data.setRunning(!data.getRunning());
+                simulazione.wake();
 
             } catch (IllegalStateException ex) {
                 System.err.println(ex.getMessage());
