@@ -30,20 +30,29 @@ public class Interfaccia extends Thread{
             try {
                 simulazione.setTicks(Integer.parseInt(ticksField.getText()));
                 ticksField.setText("");
+                handleTicksButton.setEnabled(false);;
                 simulazione.start();
-            } catch (IllegalArgumentException ex) {}
+            } catch (IllegalArgumentException ex) {
+                System.err.println("Devi inserire un numero intero");
+            }
         });
     }
 
     public void startButton() {
-        JButton handleTicksButton = new JButton("Avvia");
-        frame.add(handleTicksButton);
+        JButton handleStartButton = new JButton("Avvia");
+        frame.add(handleStartButton);
         
-        handleTicksButton.addActionListener(e -> {
+        handleStartButton.addActionListener(e -> {
             try {
-                simulazione.setRunning(true);
+                if (simulazione.getRunning()) {
+                    handleStartButton.setText("Pausa");
+                } else {
+                    handleStartButton.setText("Avvia");
+                }
+                simulazione.setRunning(!simulazione.getRunning());
+
             } catch (IllegalStateException ex) {
-                System.err.println(ex);
+                System.err.println(ex.getMessage());
             }
         });
     }

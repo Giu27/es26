@@ -21,6 +21,10 @@ public class Simulazione extends Thread{
         this.ticks = ticks;
     }
 
+    public boolean getRunning() {
+        return running;
+    }
+
     public synchronized void setRunning(boolean r) {
         if (ticks == 0) {
             throw new IllegalStateException("Non puoi avviare senza aver impostato i tick di simulazione");
@@ -46,6 +50,7 @@ public class Simulazione extends Thread{
             }
         }
         running = false;
+        ticks = 0;
         System.out.println("Simulazione terminata");
     }
 }
