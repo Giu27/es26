@@ -3,13 +3,12 @@ package it.itisgferraris;
 import java.awt.*;
 import javax.swing.*;
 
-public class Interfaccia extends Thread{
+public class Interfaccia {
     private final Simulazione simulazione;
     private final Data data;
-    private JFrame frame;
+    private final JFrame frame;
 
     public Interfaccia(Simulazione simulazione, Data data) {
-        super();
         this.simulazione = simulazione;
         this.data = data;
         frame = new JFrame("Simulazione");
@@ -18,21 +17,36 @@ public class Interfaccia extends Thread{
         frame.setLayout(new GridLayout(4, 1));
     }
 
-    public void tickPrompt() {
-        JLabel labelPrompt = new JLabel("Inserisci il numero di tick", SwingConstants.CENTER);
-        frame.add(labelPrompt);
+    private void statusBar() {
+        JPanel statusBar = new JPanel();
+        statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.X_AXIS));
+        JLabel labelTick, labelCurrentTick;
+        labelTick = new JLabel("Tick: " + data.getTicks(), SwingConstants.LEFT);
+        statusBar.add(labelTick);
+        labelCurrentTick = new JLabel("Tick in corso: " + data.getCurrentTick(), SwingConstants.LEFT);
+        statusBar.add(labelCurrentTick);
 
-        JTextArea ticksField = new JTextArea();
+        frame.add(statusBar);
+
+        Timer refresh = new Timer(100, e -> {
+            labelTick.setText("Tick: " + data.getTicks());
+            labelCurrentTick.setText("Tick in corso: " + data.getCurrentTick());
+        });
+        refresh.start();
+    }
+
+    private void tickPrompt() {
+        JTextField ticksField = new JTextField();
         frame.add(ticksField);
 
         JButton handleTicksButton = new JButton("Conferma ticks");
         frame.add(handleTicksButton);
-        
+
         handleTicksButton.addActionListener(e -> {
             try {
-                data.setTicks(Integer.parseInt(ticksField.getText()));
+                data.setTicks(Integer.parseInt(ticksField.getText().trim()));
                 ticksField.setText("");
-                handleTicksButton.setEnabled(false);;
+                handleTicksButton.setEnabled(false);
                 simulazione.start();
             } catch (IllegalArgumentException ex) {
                 System.err.println("Devi inserire un numero intero");
@@ -40,31 +54,28 @@ public class Interfaccia extends Thread{
         });
     }
 
-    public void startButton() {
+    private void startButton() {
         JButton handleStartButton = new JButton("Avvia");
         frame.add(handleStartButton);
-        
+
         handleStartButton.addActionListener(e -> {
             try {
-                if (!data.getRunning()) {
-                    handleStartButton.setText("Pausa");
-                } else {
-                    handleStartButton.setText("Avvia");
-                }
-                
-                data.setRunning(!data.getRunning());
+                boolean nowRunning = !data.getRunning();
+                handleStartButton.setText(nowRunning ? "Pausa" : "Avvia");
+                data.setRunning(nowRunning);
                 simulazione.wake();
-
             } catch (IllegalStateException ex) {
                 System.err.println(ex.getMessage());
             }
         });
     }
-    
-    @Override
-    public void run() {
-        tickPrompt();
-        startButton();
-        frame.setVisible(true);
+
+    public void show() {
+        SwingUtilities.invokeLater(() -> {
+            statusBar();
+            tickPrompt();
+            startButton();
+            frame.setVisible(true);
+        });
     }
 }

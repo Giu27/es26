@@ -33,6 +33,7 @@ public class Simulazione extends Thread {
                     System.err.println(e);
                 }
             }
+            data.setCurrentTicks(i + 1);
             ambiente.tick();
             for (Animale animale : animali) {
                 animale.tick();
@@ -41,6 +42,7 @@ public class Simulazione extends Thread {
                 sleep(DURATA_SLEEP);
             } catch (InterruptedException ex) {}
         }
+        
         data.setRunning(false);
         data.setTicks(0);
         System.out.println("Simulazione terminata");

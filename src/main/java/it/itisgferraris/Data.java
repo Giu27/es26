@@ -2,12 +2,11 @@ package it.itisgferraris;
 
 public class Data {
     private int ticks = 0;
+    private int currentTick = 0;
     private boolean running = false;
     private boolean terminata = false;
 
-    public Data() {
-
-    }
+    public Data() {}
 
     public int getTicks() {
         return ticks;
@@ -15,6 +14,14 @@ public class Data {
 
     public void setTicks(int ticks) {
         this.ticks = ticks;
+    }
+
+    public int getCurrentTick() {
+        return currentTick;
+    }
+
+    public void setCurrentTicks(int tick) {
+        this.currentTick = tick;
     }
 
     public boolean getRunning() {

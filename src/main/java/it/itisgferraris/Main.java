@@ -5,6 +5,6 @@ public class Main {
         Data data = new Data();
         Simulazione simulazione = new Simulazione(data);
         Interfaccia interfaccia = new Interfaccia(simulazione, data);
-        interfaccia.start();
+        interfaccia.show();
     }
 }
