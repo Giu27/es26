@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.time.Duration;
 import java.util.ArrayList;
 
-public class Simulazione extends Thread {
+public class Simulazione implements Runnable {
     private final int DURATA_SLEEP = 3000;
     private Data data;
     private Instant inizio, fine;
@@ -26,25 +26,26 @@ public class Simulazione extends Thread {
     public synchronized void run() {
         System.out.println("Simulazione creata");
         for (int i = 0; i < data.getTicks(); i++) {
-            while (!data.getRunning()) {
+            while (!data.getRunning() && !data.getTerminata()) {
                 try {
                     wait();
                 } catch (InterruptedException e) {
                     System.err.println(e);
                 }
             }
-            data.setCurrentTicks(i + 1);
+            data.setCurrentTick(i + 1);
             ambiente.tick();
             for (Animale animale : animali) {
                 animale.tick();
             }
             try {
-                sleep(DURATA_SLEEP);
+                Thread.sleep(DURATA_SLEEP);
             } catch (InterruptedException ex) {}
         }
         
         data.setRunning(false);
         data.setTicks(0);
+        data.setCurrentTick(0);
         System.out.println("Simulazione terminata");
         data.setTerminata(true);
     }

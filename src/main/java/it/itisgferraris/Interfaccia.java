@@ -8,6 +8,8 @@ public class Interfaccia {
     private final Data data;
     private final JFrame frame;
 
+    private JButton handleStartButton;
+
     public Interfaccia(Simulazione simulazione, Data data) {
         this.simulazione = simulazione;
         this.data = data;
@@ -47,22 +49,34 @@ public class Interfaccia {
                 data.setTicks(Integer.parseInt(ticksField.getText().trim()));
                 ticksField.setText("");
                 handleTicksButton.setEnabled(false);
-                simulazione.start();
-            } catch (IllegalArgumentException ex) {
-                System.err.println("Devi inserire un numero intero");
+                Thread t = new Thread(simulazione);
+                t.start();
+            } catch (NumberFormatException ex) {
+                System.err.println("Devi inserire un numero intero.");
+            } catch (IllegalStateException  ex) {
+                System.err.println("LOG: " + ex);
             }
         });
+
+        Timer refresh = new Timer(100, e -> {
+            if (data.getTerminata()) {
+                handleTicksButton.setEnabled(true);
+                handleStartButton.setText("Avvia");
+                data.setTerminata(false);
+            }
+        });
+        refresh.start();
     }
 
     private void startButton() {
-        JButton handleStartButton = new JButton("Avvia");
+        handleStartButton = new JButton("Avvia");
         frame.add(handleStartButton);
 
         handleStartButton.addActionListener(e -> {
             try {
                 boolean nowRunning = !data.getRunning();
-                handleStartButton.setText(nowRunning ? "Pausa" : "Avvia");
                 data.setRunning(nowRunning);
+                handleStartButton.setText(nowRunning ? "Pausa" : "Avvia");
                 simulazione.wake();
             } catch (IllegalStateException ex) {
                 System.err.println(ex.getMessage());

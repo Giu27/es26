@@ -20,7 +20,7 @@ public class Data {
         return currentTick;
     }
 
-    public void setCurrentTicks(int tick) {
+    public void setCurrentTick(int tick) {
         this.currentTick = tick;
     }
 
